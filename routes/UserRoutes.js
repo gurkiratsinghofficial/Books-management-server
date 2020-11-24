@@ -9,5 +9,6 @@ module.exports = (app) => {
   router.post("/", users.userControl.create);
   router.post("/login", users.userControl.findOne);
   router.put("/", verify, users.userControl.update);
+  router.get("/fetchUser", verify, users.userControl.findOneUser);
   app.use("/api/users", router);
 };

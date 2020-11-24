@@ -5,7 +5,7 @@ module.exports = (app) => {
    * authentication middleware
    */
   router.get("/", verify, (req, res) => {
-    res.send("Private route unlocked!");
+    res.status(200).send("Private route unlocked!");
   });
   app.use("/api/privateRoute", router);
 };

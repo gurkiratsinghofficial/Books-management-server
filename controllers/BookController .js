@@ -20,7 +20,7 @@ exports.bookControl = {
   create: async (req, res) => {
     const token = req.header("Authorization");
     const userID = jwt.verify(token, process.env.JWT_KEY);
-    if (!userID) return res.send("error");
+    if (!userID) return res.send(constants.USER_NOT_SIGN);
     const { title, author, pages, description, price, isbn } = req.body;
     const owner = userID.id;
     try {
@@ -53,7 +53,7 @@ exports.bookControl = {
         res.status(200).send(newbook);
       } else res.status(500).send(constants.CANNOT_CREATE_BOOK);
     } catch (err) {
-      res.send("here", err.message);
+      res.send(err.message);
     }
   },
   findAllBooks: async (req, res) => {
@@ -121,12 +121,9 @@ exports.bookControl = {
   delete: async (req, res) => {
     try {
       const token = req.header("Authorization");
-      console.log("this is ", token);
       const userID = jwt.verify(token, process.env.JWT_KEY);
       const owner = userID.id;
       const { isbn } = req.body;
-      console.log(req.body);
-      console.log(isbn);
 
       if (!owner || !isbn) return res.status(500).send(constants.REQ_OWN_ISBN);
       const deleteBook = await Book.destroy({

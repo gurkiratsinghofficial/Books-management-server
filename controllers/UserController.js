@@ -46,7 +46,7 @@ exports.userControl = {
 
       //check if email Exists
       const emailExist = await User.findOne({ where: { email: email } });
-      if (emailExist) return res.status(300).send(constants.EMAIL_EXIST);
+      if (emailExist) return res.status(300).json(constants.EMAIL_EXIST);
 
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
@@ -124,11 +124,29 @@ exports.userControl = {
       res.send(err);
     }
   },
+  findOneUser: async (req, res) => {
+    const token = req.header("Authorization");
+    const userID = jwt.verify(token, process.env.JWT_KEY);
+    if (!userID) return res.send(constants.USER_NOT_SIGN);
+    try {
+      const userinfo = await User.findOne({ where: { id: userID.id } });
+      if (!userinfo) return res.status(500).send(constants.INVALID_LOGIN);
+      else
+        return res.send({
+          success: "true",
+          message: "user fetched",
+          userinfo,
+        });
+      // .send(constants.LOGIN_SUCCESS);
+    } catch (err) {
+      res.send(err);
+    }
+  },
   // * update(update user information)
   update: async (req, res) => {
     const token = req.header("Authorization");
     const userID = jwt.verify(token, process.env.JWT_KEY);
-    if (!userID) return res.send("error");
+    if (!userID) return res.send(constants.USER_NOT_SIGN);
     const { firstname, lastname, gender, profession, birthday } = req.body;
     const id = userID.id;
 

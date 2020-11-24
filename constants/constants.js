@@ -86,4 +86,8 @@ exports.constants = {
     success: "false",
     message: "user not found in DB",
   },
+  USER_NOT_SIGN: {
+    success: "false",
+    message: "user is not signed in",
+  },
 };
